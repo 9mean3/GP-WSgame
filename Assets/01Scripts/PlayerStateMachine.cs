@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting.FullSerializer;
 using UnityEngine;
 
 public enum PlayerStateEnum
@@ -11,6 +12,7 @@ public enum PlayerStateEnum
 public class PlayerStateMachine
 {
     public PlayerState CurrentState { get; private set; }
+    private PlayerState beforeState;
     public Dictionary<PlayerStateEnum, PlayerState> StateDictionary = new Dictionary<PlayerStateEnum, PlayerState>();
 
     private Player player;
@@ -19,12 +21,15 @@ public class PlayerStateMachine
     {
         this.player = player;
         CurrentState = StateDictionary[stateEnum];
+        beforeState = CurrentState;
         CurrentState.Enter();
     }
 
     public void ChangeState(PlayerStateEnum stateEnum)
     {
+        Debug.Log($"State Change: {beforeState.ToString()} to {CurrentState.ToString()}");
         CurrentState.Exit();
+        beforeState = CurrentState;
         CurrentState = StateDictionary[stateEnum];
         CurrentState.Enter();
     }

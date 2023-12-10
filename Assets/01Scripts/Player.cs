@@ -8,7 +8,7 @@ public class Player : MonoBehaviour
     [SerializeField] private InputReader inputReader;
     public InputReader InputReader => inputReader;
 
-    public Rigidbody RigidbodyCompo { get; private set; }
+    public CharacterController CharacterControllerCompo { get; private set; }
     public PlayerStateMachine StateMachine { get; private set; }
 
     [SerializeField] private Transform camPos;
@@ -18,18 +18,18 @@ public class Player : MonoBehaviour
 
     private float camRot;
 
-    private void Awake()
+    private void Start()
     {
-        RigidbodyCompo = GetComponent<Rigidbody>();
+        CharacterControllerCompo = GetComponent<CharacterController>();
         StateMachine = new PlayerStateMachine();
 
         foreach (PlayerStateEnum stateEnum in Enum.GetValues(typeof(PlayerStateEnum)))
         {
-            string typeName = $"Player{stateEnum.ToString()}State";
+            string typeName = stateEnum.ToString();
             try
             {
-                Type type = Type.GetType(typeName);
-                PlayerState instance = Activator.CreateInstance(type) as PlayerState;
+                Type type = Type.GetType($"Player{typeName}State");
+                PlayerState instance = Activator.CreateInstance(type, this, StateMachine) as PlayerState;
                 StateMachine.AddState(stateEnum, instance);
             }
             catch (Exception e)
@@ -37,10 +37,14 @@ public class Player : MonoBehaviour
                 Debug.LogError(e);
             }
         }
+
+        StateMachine.Initialize(PlayerStateEnum.Idle, this);
     }
 
     private void Update()
     {
+        StateMachine.CurrentState.Update();
+
         CamRot();
     }
 
@@ -51,21 +55,18 @@ public class Player : MonoBehaviour
         camRot += inputY;
         camRot = Mathf.Clamp(camRot, -85, 85);
 
-        //camPos.Rotate(new Vector2( -InputReader.Look.y, 0));
         camPos.localEulerAngles = new Vector3(-camRot, 0f, 0f);
-        transform.Rotate(new Vector2(0, InputReader.Look.x));
+        transform.Rotate(new Vector2(0, inputX));
     }
 
-    public void SetVelocity(float x, float y, float z)
+    public void SetVelocity(Vector3 dir)
     {
-        RigidbodyCompo.velocity = new Vector3(x, y, z);
+        dir = dir.x * transform.right + dir.z * transform.forward;
+        CharacterControllerCompo.Move(dir * moveSpeed * Time.deltaTime);
     }
 
-    public void StopImmediately(bool withYAxis)
+    public void StopImmediately()
     {
-        if (!withYAxis)
-            RigidbodyCompo.velocity = Vector3.zero;
-        else
-            RigidbodyCompo.velocity = new Vector3(0, RigidbodyCompo.velocity.y, 0);
+        CharacterControllerCompo.Move(Vector3.zero);
     }
 }

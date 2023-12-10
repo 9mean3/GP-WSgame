@@ -10,16 +10,19 @@ public class PlayerIdleState : PlayerState
 
     public override void Enter()
     {
-        throw new System.NotImplementedException();
-    }
-
-    public override void Exit()
-    {
-        throw new System.NotImplementedException();
+        player.StopImmediately();
     }
 
     public override void Update()
     {
-        throw new System.NotImplementedException();
+        if (player.InputReader.Move.magnitude >= 0.05f)
+        {
+            playerStateMachine.ChangeState(PlayerStateEnum.Move);
+        }
+    }
+
+    public override void Exit()
+    {
+
     }
 }

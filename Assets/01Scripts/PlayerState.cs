@@ -1,8 +1,7 @@
-using System.Collections;
-using System.Collections.Generic;
+
 using UnityEngine;
 
-public abstract class PlayerState
+public class PlayerState
 {
     protected Player player;
     protected PlayerStateMachine playerStateMachine;
@@ -13,10 +12,10 @@ public abstract class PlayerState
         playerStateMachine = stateMachine;
     }
 
-    public abstract void Enter();
+    public virtual void Enter() { }
 
-    public abstract void Update();
+    public virtual void Update() { }
 
-    public abstract void Exit();
+    public virtual void Exit() { }
 
 }
