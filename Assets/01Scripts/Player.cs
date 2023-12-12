@@ -1,3 +1,4 @@
+using Cinemachine;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -17,6 +18,10 @@ public class Player : MonoBehaviour
     [SerializeField] private float moveSpeed;
 
     private float camRot;
+
+    public bool isZoom;
+    public Recoil rec;
+    public Recoil rec1;
 
     private void Start()
     {
@@ -41,11 +46,31 @@ public class Player : MonoBehaviour
         StateMachine.Initialize(PlayerStateEnum.Idle, this);
     }
 
+    bool isShooting = false;
     private void Update()
     {
         StateMachine.CurrentState.Update();
 
+        if (Input.GetMouseButton(1))
+            isZoom = true;
+        else
+            isZoom = false;
+
+        if (Input.GetMouseButton(0) && !isShooting)
+        {
+            isShooting = true;
+            StartCoroutine(FireCrt());
+        }
+
         CamRot();
+    }
+
+    IEnumerator FireCrt()
+    {
+        rec.RecoilFire();
+        rec1.RecoilFire();
+        yield return new WaitForSeconds(.1f);
+        isShooting=false;
     }
 
     private void CamRot()
