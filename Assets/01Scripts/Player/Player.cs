@@ -19,10 +19,6 @@ public class Player : MonoBehaviour
 
     private float camRot;
 
-    public bool isZoom;
-    public Recoil rec;
-    public Recoil rec1;
-
     private void Start()
     {
         CharacterControllerCompo = GetComponent<CharacterController>();
@@ -51,26 +47,7 @@ public class Player : MonoBehaviour
     {
         StateMachine.CurrentState.Update();
 
-        if (Input.GetMouseButton(1))
-            isZoom = true;
-        else
-            isZoom = false;
-
-        if (Input.GetMouseButton(0) && !isShooting)
-        {
-            isShooting = true;
-            StartCoroutine(FireCrt());
-        }
-
         CamRot();
-    }
-
-    IEnumerator FireCrt()
-    {
-        rec.RecoilFire();
-        rec1.RecoilFire();
-        yield return new WaitForSeconds(.1f);
-        isShooting=false;
     }
 
     private void CamRot()

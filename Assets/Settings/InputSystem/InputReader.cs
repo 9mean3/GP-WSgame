@@ -1,7 +1,4 @@
-using System.Collections;
-using System.Collections.Generic;
-using Unity.VisualScripting;
-using UnityEditor;
+using System;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -9,8 +6,8 @@ using UnityEngine.InputSystem;
 public class InputReader : ScriptableObject, Controls.IPlayerActions
 {
     public Vector2 Move { get; private set; }
-
     public Vector2 Look { get; private set; }
+    public event Action Fire;
 
     private Controls controls;
 
@@ -32,5 +29,11 @@ public class InputReader : ScriptableObject, Controls.IPlayerActions
     public void OnLook(InputAction.CallbackContext context)
     {
         Look = context.ReadValue<Vector2>();
+    }
+
+    public void OnFire(InputAction.CallbackContext context)
+    {
+        if (context.performed)
+            Fire?.Invoke();
     }
 }
