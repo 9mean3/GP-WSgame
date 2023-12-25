@@ -17,7 +17,7 @@ public class Player : MonoBehaviour
     [SerializeField] private float mouseSpeed;
     [SerializeField] private float moveSpeed;
 
-    private float camRot;
+    private Vector3 camRot;
 
     private void Start()
     {
@@ -54,11 +54,12 @@ public class Player : MonoBehaviour
     {
         float inputX = InputReader.Look.x * mouseSpeed * Time.deltaTime;
         float inputY = InputReader.Look.y * mouseSpeed * Time.deltaTime;
-        camRot += inputY;
-        camRot = Mathf.Clamp(camRot, -85, 85);
+        camRot.x += inputY;
+        camRot.y = inputX;
+        camRot.x = Mathf.Clamp(camRot.x, -85, 85);
 
-        camPos.localEulerAngles = new Vector3(-camRot, 0f, 0f);
-        transform.Rotate(new Vector2(0, inputX));
+        camPos.localEulerAngles = new Vector3(-camRot.x, 0f, 0f);
+        transform.Rotate(new Vector2(0, camRot.y));
     }
 
     public void SetVelocity(Vector3 dir)

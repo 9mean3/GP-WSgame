@@ -4,5 +4,5 @@ using UnityEngine;
 
 public class Gun : Weapon
 {
-
+    [SerializeField] protected GameObject _bulletPrefab;
 }
