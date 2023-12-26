@@ -5,13 +5,13 @@ using UnityEngine;
 
 public class WeaponController : MonoBehaviour
 {
+    private Player _player;
+
     [SerializeField]
     private Weapon _curWeapon;
     public Weapon CurWeapon => _curWeapon;
 
     [SerializeField] private Transform _gunHolder;
-
-    private Player _player;
 
     private void Awake()
     {
